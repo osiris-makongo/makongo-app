@@ -61,3 +61,17 @@ progress { width: 100%; accent-color: #fff; }
 .ecole-alerte { border: 1px solid var(--attention); padding: 8px; font-size: .78rem; color: var(--attention); }
 .ecole-ok { color: var(--positive); font-size: .8rem; }
 .ecole-erreur { color: var(--negative); font-size: .8rem; }
+/* Téléphone (Galaxy S24+, Chrome Android) : clavier, bulles, zones tactiles */
+html, body { height: 100dvh; overscroll-behavior: none; }
+body { -webkit-tap-highlight-color: transparent; }
+header { position: sticky; top: 0; background: #000; z-index: 1; }
+main { -webkit-overflow-scrolling: touch; }
+.moi { margin: 14px 0 6px auto; max-width: 85%; width: fit-content; padding: 8px 12px; border: 1px solid var(--border); background: #0b0b0b; text-align: left; color: var(--ink); }
+.elle { max-width: 100%; overflow-wrap: anywhere; }
+.accueil.cache { display: none; }
+#formulaire { padding-bottom: max(10px, env(safe-area-inset-bottom)); align-items: flex-end; background: #000; }
+#question { font-size: 16px; max-height: 30dvh; }
+#envoyer { min-width: 48px; min-height: 44px; font-size: 1.2rem; padding: 0 12px; }
+.pastille { min-height: 34px; }
+dialog { max-height: 88dvh; overflow-y: auto; overscroll-behavior: contain; }
+dialog button { min-height: 44px; }

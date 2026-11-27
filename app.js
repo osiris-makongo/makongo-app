@@ -193,6 +193,7 @@ async function noter(texte) {
 
 // --- Question -------------------------------------------------------------------------------
 async function envoyer(question) {
+  document.querySelector(".accueil")?.classList.add("cache");
   bulle("moi", question);
   const cible = bulle("elle", "…");
   if (question.startsWith("/note ")) {
@@ -226,6 +227,7 @@ $("formulaire").addEventListener("submit", async (e) => {
   const question = $("question").value.trim();
   if (!question) return;
   $("question").value = "";
+  $("question").style.height = "auto";
   $("envoyer").disabled = true;
   try {
     await envoyer(question);
@@ -235,9 +237,18 @@ $("formulaire").addEventListener("submit", async (e) => {
     $("envoyer").disabled = false;
   }
 });
+// Sur téléphone, Entrée va à la ligne ; on envoie avec le bouton. Sur PC, Entrée envoie.
+const tactile = matchMedia("(pointer: coarse)").matches;
 $("question").addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("formulaire").requestSubmit(); }
+  if (!tactile && e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("formulaire").requestSubmit(); }
 });
+$("question").addEventListener("input", () => {  // la zone de texte grandit avec le message
+  $("question").style.height = "auto";
+  $("question").style.height = `${$("question").scrollHeight + 2}px`;
+});
+$("question").addEventListener("focus", () => setTimeout(() => {
+  $("discussion").scrollTop = $("discussion").scrollHeight;  // le clavier ne cache pas la fin de la discussion
+}, 300));
 
 // --- Réglages -------------------------------------------------------------------------------
 function majReglages() {

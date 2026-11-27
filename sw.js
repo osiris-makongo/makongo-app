@@ -1,6 +1,6 @@
 // L'appli s'ouvre même sans réseau : ses fichiers sont gardés ici. Le modèle du téléphone est
 // gardé à part par WebLLM (Cache Storage). Aucune réponse du PC n'est mise en cache.
-const VERSION = "makongo-mobile-v3";
+const VERSION = "makongo-mobile-v4";
 const FICHIERS = ["./", "index.html", "app.js", "ecole.js", "style.css", "web-llm.js", "wllama/index.js", "wllama/wllama.wasm", "manifest.webmanifest", "icone-192.png",
   "icone-512.png", "polices/chakra-petch-latin-400.woff2", "polices/chakra-petch-latin-600.woff2"];
 
@@ -17,7 +17,8 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== "GET" || url.origin !== self.location.origin) return;  // PC et modèle : jamais ici
-  e.respondWith(fetch(e.request).then((r) => {
+  e.respondWith(fetch(e.request, { cache: "no-cache" }).then(  // toujours revalider : les mises à jour arrivent tout de suite
+    (r) => {
     const copie = r.clone();
     caches.open(VERSION).then((c) => c.put(e.request, copie));
     return r;
