@@ -13,7 +13,10 @@
 <body>
 <header>
   <span class="nom">MAKONGO</span>
-  <button id="reglages-bouton" class="pastille" aria-label="Réglages"><span id="mode">…</span></button>
+  <span class="droite">
+    <button id="ecole-bouton" class="pastille" aria-label="Éducation">École</button>
+    <button id="reglages-bouton" class="pastille" aria-label="Réglages"><span id="mode">…</span></button>
+  </span>
 </header>
 
 <main id="discussion" aria-live="polite">
@@ -45,6 +48,13 @@
   <button type="button" id="oublier" class="danger">Effacer la copie de la mémoire sur ce téléphone</button>
   <form method="dialog"><button>Fermer</button></form>
 </dialog>
+<dialog id="ecole">
+  <h2>École de Makongo</h2>
+  <p class="aide">Le PC calcule, tu pilotes d'ici. Rien ne remplace le cerveau actuel sans ton clic.</p>
+  <div id="ecole-contenu"><p class="aide">Chargement…</p></div>
+  <form method="dialog"><button>Fermer</button></form>
+</dialog>
 <script type="module" src="app.js"></script>
+<script type="module" src="ecole.js"></script>
 </body>
 </html>
