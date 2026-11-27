@@ -53,8 +53,10 @@ function rendre(e) {
   blocs.push(el("div", { class: "ecole-etat" },
     el("span", {}, `${res.temperature ?? "?"} °C`), el("span", {}, res.secteur ? "branché" : "sur batterie"),
     el("span", {}, `${Math.round(res.ram_libre_mo / 1000)} Go libres`), el("span", {}, occupe)));
-  // Garde-fou : règles modifiées
-  if (e.regles_modifiees.length) {
+  // Garde-fou : bordure verte quand tout est approuvé, orange quand un fichier protégé attend ton accord.
+  if (!e.regles_modifiees.length) {
+    blocs.push(el("div", { class: "ecole-alerte ok" }, el("p", {}, "✓ Règles et examens approuvés : tout est à jour.")));
+  } else {
     blocs.push(el("div", { class: "ecole-alerte" },
       el("p", {}, `Règles ou examens modifiés : ${e.regles_modifiees.join(", ")}. Aucun cycle ne démarre avant ton accord.`),
       el("button", { class: "secondaire", onclick: () => {

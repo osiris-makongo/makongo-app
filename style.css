@@ -74,4 +74,4 @@ main { -webkit-overflow-scrolling: touch; }
 #envoyer { min-width: 48px; min-height: 44px; font-size: 1.2rem; padding: 0 12px; }
 .pastille { min-height: 34px; }
 dialog { max-height: 88dvh; overflow-y: auto; overscroll-behavior: contain; }
-dialog button { min-height: 44px; }
+dialog button { min-height: 44px; }.ecole-alerte.ok { border-color: var(--positive); color: var(--positive); }
