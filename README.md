@@ -10,5 +10,6 @@ Ce dépôt ne contient que l'interface : aucune donnée personnelle, aucune adre
 ## Licences
 
 - `web-llm.js` : WebLLM 0.2.89, © MLC, licence Apache 2.0.
+- `wllama/` : wllama 4.0.0 (llama.cpp en WebAssembly), licence MIT, pour les téléphones sans WebGPU (modèle Qwen2.5-1.5B-Instruct GGUF, Apache 2.0).
 - Police Chakra Petch : licence SIL Open Font License 1.1 (`polices/OFL-ChakraPetch.txt`).
 - Modèle téléchargé sur le téléphone : Qwen2.5-3B-Instruct, licence Qwen Research (usage non commercial), via Hugging Face (mlc-ai).

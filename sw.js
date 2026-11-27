@@ -1,7 +1,7 @@
 // L'appli s'ouvre même sans réseau : ses fichiers sont gardés ici. Le modèle du téléphone est
 // gardé à part par WebLLM (Cache Storage). Aucune réponse du PC n'est mise en cache.
-const VERSION = "makongo-mobile-v2";
-const FICHIERS = ["./", "index.html", "app.js", "ecole.js", "style.css", "web-llm.js", "manifest.webmanifest", "icone-192.png",
+const VERSION = "makongo-mobile-v3";
+const FICHIERS = ["./", "index.html", "app.js", "ecole.js", "style.css", "web-llm.js", "wllama/index.js", "wllama/wllama.wasm", "manifest.webmanifest", "icone-192.png",
   "icone-512.png", "polices/chakra-petch-latin-400.woff2", "polices/chakra-petch-latin-600.woff2"];
 
 self.addEventListener("install", (e) => {

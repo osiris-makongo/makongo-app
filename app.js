@@ -7,6 +7,7 @@
 "use strict";
 
 const MODELE_TELEPHONE = "Qwen2.5-3B-Instruct-q4f16_1-MLC";
+const MODELE_PROCESSEUR = { repo: "Qwen/Qwen2.5-1.5B-Instruct-GGUF", file: "qwen2.5-1.5b-instruct-q4_k_m.gguf" };
 const CLE = { adresse: "makongo-adresse-pc", copie: "makongo-copie", attente: "makongo-notes-en-attente" };
 const $ = (id) => document.getElementById(id);
 let historique = [];
@@ -96,19 +97,47 @@ async function demanderPC(question, cible) {
 }
 
 // --- Téléphone ------------------------------------------------------------------------------
-async function chargerCerveau() {
-  if (moteur) return moteur;
-  if (!navigator.gpu) throw new Error("Ce navigateur n'a pas WebGPU : ouvre l'appli dans Chrome à jour.");
+async function gpuDisponible() {
+  try { return Boolean(navigator.gpu && await navigator.gpu.requestAdapter()); } catch { return false; }
+}
+
+// Puce graphique (WebGPU) : Qwen2.5 3B. Sinon (par exemple Exynos, que Chrome ne prend pas encore en charge),
+// processeur (llama.cpp en WebAssembly, wllama) : Qwen2.5 1.5B, plus petit pour rester assez rapide.
+async function moteurGPU() {
   const webllm = await import("./web-llm.js");
-  $("progression").hidden = false;
-  moteur = await webllm.CreateMLCEngine(MODELE_TELEPHONE, {
+  return webllm.CreateMLCEngine(MODELE_TELEPHONE, {
     initProgressCallback: (p) => {
       $("progression").value = p.progress || 0;
       $("etat-cerveau").textContent = p.text;
     },
   });
+}
+
+async function moteurProcesseur() {
+  const { Wllama } = await import("./wllama/index.js");
+  const w = new Wllama({ default: new URL("wllama/wllama.wasm", location.href).href },
+    { allowOffline: true, suppressNativeLog: true });
+  await w.loadModelFromHF(MODELE_PROCESSEUR, {
+    n_ctx: 2048,
+    progressCallback: ({ loaded, total }) => {
+      $("progression").value = total ? loaded / total : 0;
+      $("etat-cerveau").textContent = `Téléchargement : ${Math.round(loaded / 1e6)} / ${Math.round(total / 1e6)} Mo`;
+    },
+  });
+  return {  // même forme que WebLLM : chat.completions.create(...) renvoie un flux de morceaux
+    chat: { completions: { create: (options) => w.createChatCompletion({ ...options, stream: true }) } },
+  };
+}
+
+async function chargerCerveau() {
+  if (moteur) return moteur;
+  $("progression").hidden = false;
+  const gpu = await gpuDisponible();
+  $("etat-cerveau").textContent = gpu ? "Puce graphique trouvée : Qwen2.5 3B." : "Pas de WebGPU : cerveau sur le processeur (Qwen2.5 1.5B).";
+  moteur = gpu ? await moteurGPU() : await moteurProcesseur();
+  localStorage.setItem("makongo-cerveau-telephone", gpu ? "Qwen2.5 3B (puce graphique)" : "Qwen2.5 1.5B (processeur)");
   $("progression").hidden = true;
-  $("etat-cerveau").textContent = "Cerveau du téléphone prêt (aussi sans Internet).";
+  $("etat-cerveau").textContent = `Cerveau du téléphone prêt : ${localStorage.getItem("makongo-cerveau-telephone")}, aussi sans Internet.`;
   return moteur;
 }
 
@@ -143,7 +172,8 @@ async function demanderTelephone(question, cible) {
     cible.textContent = texte;
     $("discussion").scrollTop = $("discussion").scrollHeight;
   }
-  return { texte, info: `cerveau du téléphone — mémoire copiée le ${copie.copie}` };
+  const cerveau = localStorage.getItem("makongo-cerveau-telephone") || "téléphone";
+  return { texte, info: `cerveau du téléphone, ${cerveau} — mémoire copiée le ${copie.copie}` };
 }
 
 // --- Notes ----------------------------------------------------------------------------------
